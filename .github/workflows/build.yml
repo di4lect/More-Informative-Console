@@ -1,0 +1,56 @@
+name: Build VampireEyeGlowFix
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-2022
+    env:
+      VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}\vcpkg-cache
+      VCPKG_FEATURE_FLAGS: manifests,binarycaching
+      VCPKG_TAG: 2025.10.17
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up vcpkg
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "$env:VCPKG_DEFAULT_BINARY_CACHE" | Out-Null
+          git clone https://github.com/microsoft/vcpkg.git "${{ github.workspace }}\vcpkg"
+          git -C "${{ github.workspace }}\vcpkg" checkout ${{ env.VCPKG_TAG }}
+          & "${{ github.workspace }}\vcpkg\bootstrap-vcpkg.bat" -disableMetrics
+          "VCPKG_ROOT=${{ github.workspace }}\vcpkg" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Cache vcpkg packages
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}\vcpkg-cache
+          key: vcpkg-vegf-${{ env.VCPKG_TAG }}-${{ hashFiles('vcpkg.json', '.gitmodules') }}
+          restore-keys: vcpkg-vegf-${{ env.VCPKG_TAG }}-
+
+      - name: Configure
+        shell: pwsh
+        run: cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+
+      - name: Build
+        shell: pwsh
+        run: cmake --build build --config Release --parallel
+
+      - name: Collect output
+        shell: pwsh
+        run: |
+          $out = "dist/SKSE/Plugins"
+          New-Item -ItemType Directory -Force -Path $out | Out-Null
+          Copy-Item build/Release/VampireEyeGlowFix.dll $out
+          Copy-Item build/Release/VampireEyeGlowFix.pdb $out -ErrorAction SilentlyContinue
+          Copy-Item VampireEyeGlowFix.ini $out
+          Get-ChildItem -Recurse dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: VampireEyeGlowFix-${{ github.sha }}
+          path: dist

@@ -1,0 +1,17 @@
+{
+  "name": "vampireeyeglowfix",
+  "version-string": "1.0.0",
+  "description": "Removes the emissive glow from vampire eyes on the fly",
+  "supports": "windows & x64",
+  "dependencies": [
+    "directxmath",
+    "directxtk",
+    "rapidcsv",
+    "spdlog"
+  ],
+  "builtin-baseline": "74e6536215718009aae747d86d84b78376bf9e09",
+  "overrides": [
+    { "name": "fmt", "version": "10.2.1" },
+    { "name": "spdlog", "version": "1.13.0" }
+  ]
+}

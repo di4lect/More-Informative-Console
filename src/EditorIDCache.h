@@ -59,7 +59,7 @@ namespace clib_util::editorID
 			return a_form->GetFormEditorID();
 		default:
 			{
-				static auto tweaks = GetModuleHandle("po3_Tweaks");
+				static auto tweaks = GetModuleHandleA("po3_Tweaks");
 				static auto func = reinterpret_cast<_GetFormEditorID>(GetProcAddress(tweaks, "GetFormEditorID"));
 				if (func)
 				{

@@ -102,6 +102,7 @@ endif()
 if (MSVC)
 	add_compile_definitions(
 		_UNICODE
+		NOMINMAX	# Keep windows.h min/max macros from breaking newer SimpleIni (std::numeric_limits<...>::max)
 	)
 
 	if (NOT ${CMAKE_GENERATOR} STREQUAL "Ninja")

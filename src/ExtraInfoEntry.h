@@ -56,6 +56,9 @@ enum priority
 	priority_Model,
 	priority_Texture,
 	priority_TextureSet,
+	priority_Meshes,
+	priority_Mesh,
+	priority_Mesh_Detail,
 	//Actor-Part1
 	priority_Actor_Health,
 	priority_Actor_Magicka,

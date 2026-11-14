@@ -11,12 +11,23 @@
     "span-lite",
     "spdlog",
     "simpleini",
-	"robin-hood-hashing",
+    "robin-hood-hashing",
     "rsm-binary-io",
-    "xbyak",	
-	"directxmath",
+    "xbyak",
+    "directxmath",
     "directxtk",
-	"catch2",
+    "catch2",
     "rapidcsv"
+  ],
+  "builtin-baseline": "74e6536215718009aae747d86d84b78376bf9e09",
+  "overrides": [
+    {
+      "name": "fmt",
+      "version": "10.2.1"
+    },
+    {
+      "name": "spdlog",
+      "version": "1.13.0"
+    }
   ]
 }

@@ -11,7 +11,7 @@ jobs:
     env:
       VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}\vcpkg-cache
       VCPKG_FEATURE_FLAGS: manifests,binarycaching
-      VCPKG_TAG: 2024.04.26
+      VCPKG_TAG: 2025.10.17
     steps:
       - uses: actions/checkout@v4
         with:
@@ -21,8 +21,9 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path "$env:VCPKG_DEFAULT_BINARY_CACHE" | Out-Null
-          # Pin vcpkg to the same era as the CommonLib submodule (April 2024). Newer fmt (v11+) rejects CommonLib's non-const formatters.
-          git clone --depth 1 --branch ${{ env.VCPKG_TAG }} https://github.com/microsoft/vcpkg.git "${{ github.workspace }}\vcpkg"
+          # Full clone so vcpkg.json's builtin-baseline and version overrides (fmt/spdlog pinned for CommonLib) can be resolved.
+          git clone https://github.com/microsoft/vcpkg.git "${{ github.workspace }}\vcpkg"
+          git -C "${{ github.workspace }}\vcpkg" checkout ${{ env.VCPKG_TAG }}
           & "${{ github.workspace }}\vcpkg\bootstrap-vcpkg.bat" -disableMetrics
           "VCPKG_ROOT=${{ github.workspace }}\vcpkg" | Out-File -FilePath $env:GITHUB_ENV -Append
           # The project's CMakeLists looks for CommonLibSSE; the repo ships the multi-runtime (SE/AE/VR) CommonLibVR fork under that role.
